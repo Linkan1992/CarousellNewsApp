@@ -9,6 +9,7 @@
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
+        style="@style/ToolbarTitleText"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/toolbar_color"
@@ -49,12 +50,12 @@
 
         <TextView
             android:id="@+id/tvError"
+            style="@style/ToolbarTitleText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/something_went_wrong"
-            android:textColor="@android:color/black"
-            android:textSize="16sp"
+            android:textColor="@color/black"
             android:gravity="center" />
 
         <Button

@@ -10,4 +10,7 @@
     <color name="status_bar_color">#B71C1C</color>
     <color name="white">#FFFFFFFF</color>
     <color name="semi_transparent_black">#7F000000</color>
+    <color name="c_262629">#262629</color>
+    <color name="c_8F939C">#8F939C</color>
+
 </resources>
