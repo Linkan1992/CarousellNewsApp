@@ -7,32 +7,33 @@ import java.time.temporal.ChronoUnit
 
 object UtilHelper {
 
-    fun createdTimeAgoString(epochSeconds: Long): String {
-        val created = Instant.ofEpochSecond(epochSeconds)
+    fun createdTimeAgoString(createdTime : Long): String {
+        val now = LocalDateTime.now()
+        val createdTime = Instant.ofEpochSecond(createdTime)
             .atZone(ZoneId.systemDefault())
             .toLocalDateTime()
-        val now = LocalDateTime.now()
 
-        val seconds = ChronoUnit.SECONDS.between(created, now)
+        val seconds = ChronoUnit.SECONDS.between(createdTime, now)
 
-        val minute = 60
-        val hour = 60 * minute
-        val day = 24 * hour
-        val week = 7 * day
-        val month = 30 * day
-        val year = 365 * day
+        fun format(unit: String, value: Long): String =
+            "$value $unit${if (value != 1L) "s" else ""} ago"
 
-        val (value, unit) = when {
-            seconds < minute -> seconds to "second"
-            seconds < hour -> (seconds / minute) to "minute"
-            seconds < day -> (seconds / hour) to "hour"
-            seconds < week -> (seconds / day) to "day"
-            seconds < month -> (seconds / week) to "week"
-            seconds < year -> (seconds / month) to "month"
-            else -> (seconds / year) to "year"
+        return when {
+            seconds < 2 -> "$seconds second ago"
+            seconds < 60 -> format("second", seconds)
+            seconds < 120 -> format("minute", 1)
+            seconds < 3600 -> format("minute", seconds / 60)
+            seconds < 7200 -> format("hour", 1)
+            seconds < 86400 -> format("hour", seconds / 3600)
+            seconds < 172800 -> format("day", 1)
+            seconds < 604800 -> format("day", seconds / 86400)
+            seconds < 1209600 -> format("week", 1)
+            seconds < 2419200 -> format("week", seconds / 604800)
+            seconds < 4838400 -> format("month", 1)
+            seconds < 29030400 -> format("month", seconds / 2419200)
+            seconds < 58060800 -> format("year", 1)
+            else -> format("year", seconds / 29030400)
         }
-
-        return "$value $unit${if (value != 1L) "s" else ""} ago"
     }
 
 }
