@@ -58,6 +58,7 @@ class NewsAdapter @Inject constructor(
                 .into(holder.mBinding.imvArticleImage)
             holder.mBinding.mtvArticleTitle.text = newsArticle.title
             holder.mBinding.mtvArticleDescription.text = newsArticle.description
+            holder.mBinding.mtvTimeCreated.text = newsArticle.timeCreated?.toString()
             holder.itemView.apply {
                 setOnClickListener {
                     onItemClickListener?.let { listener ->
