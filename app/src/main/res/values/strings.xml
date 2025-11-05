@@ -3,4 +3,6 @@
     <string name="dashboard_title">Carousell News</string>
     <string name="txt_recent">Recent</string>
     <string name="text_popular">Popular</string>
+    <string name="something_went_wrong">Something went wrong!</string>
+    <string name="retry">Retry</string>
 </resources>

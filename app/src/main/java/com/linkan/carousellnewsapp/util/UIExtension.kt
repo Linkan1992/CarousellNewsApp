@@ -22,7 +22,7 @@ fun AppCompatActivity.setStatusBarColorCompat(
     val insetsController = WindowInsetsControllerCompat(window, window.decorView)
     insetsController.isAppearanceLightStatusBars = lightIcons
 
-    // Optional: also set navigation bar to match (if desired)
+
     window.navigationBarColor = color
     insetsController.isAppearanceLightNavigationBars = lightIcons
 }
@@ -35,20 +35,15 @@ fun Activity.setSystemBarsColor(
     val window = window
     val color = ContextCompat.getColor(this, colorResId)
 
-    // Required: allow app to draw system bar backgrounds
     WindowCompat.setDecorFitsSystemWindows(window, true)
-
-    // Official non-deprecated method (works for all SDKs)
     window.setFlags(
         android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS,
         android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS
     )
 
-    // Set bar colors
     window.statusBarColor = color
     window.navigationBarColor = color
 
-    // Control icon / text contrast using modern API
     when {
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
             val controller = window.insetsController
@@ -75,7 +70,6 @@ fun Activity.setSystemBarsColor(
             }
         }
         else -> {
-            // Backward compatible method for API < 30
             @Suppress("DEPRECATION")
             window.decorView.systemUiVisibility = if (darkIcons) {
                 android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or
