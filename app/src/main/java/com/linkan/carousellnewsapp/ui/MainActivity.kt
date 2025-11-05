@@ -94,7 +94,6 @@ class MainActivity : AppCompatActivity() {
                                 show = list.isEmpty(),
                                 message = message
                             )
-                         //   newsAdapter.newArticleList = list
                         }
 
                         is ResultEvent.Error -> {
@@ -108,7 +107,7 @@ class MainActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                mViewModel.filterdNews.collect { newsArticleList ->
+                mViewModel.filterNews.collect { newsArticleList ->
                     newsAdapter.newArticleList = newsArticleList
                 }
             }

@@ -41,7 +41,7 @@ class MainViewModel @Inject constructor(
         searchCorousellNews()
     }
 
-    val filterdNews: StateFlow<List<UiStateArticle>> =
+    val filterNews: StateFlow<List<UiStateArticle>> =
         combine(newsArticles, selectedFilterType) { newsPost, filter ->
             when (filter) {
                 FilterType.RECENT -> newsPost.sortedByDescending { it.newsArticle.timeCreated }
@@ -62,17 +62,8 @@ class MainViewModel @Inject constructor(
                 .collectLatest { result ->
                     when (result) {
                         is ResultEvent.Success -> {
-                            val articles = result.data.toList()
-                            val uiStateArticleList = mutableListOf<UiStateArticle>().run {
-                                articles.forEach { article ->
-                                    add(
-                                        UiStateArticle(
-                                            article,
-                                            UtilHelper.createdTimeAgoString(article.timeCreated ?: 0)
-                                        )
-                                    )
-                                }
-                                this
+                            val uiStateArticleList = result.data.map {
+                                UiStateArticle(it, UtilHelper.createdTimeAgoString(it.timeCreated ?: 0))
                             }
                             mNewsArticles.value = uiStateArticleList
                             mNewsFeedState.value = result
