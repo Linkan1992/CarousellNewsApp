@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_recent"
+        android:icon="@android:drawable/arrow_down_float"
+        android:title="@string/txt_recent"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_popular"
+        android:title="@string/text_popular"
+        app:showAsAction="never" />
+
+</menu>
