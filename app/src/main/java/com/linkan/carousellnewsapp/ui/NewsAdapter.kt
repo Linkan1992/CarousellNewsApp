@@ -7,34 +7,33 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
-import com.linkan.carousellnewsapp.data.model.NewsArticle
 import com.linkan.carousellnewsapp.databinding.ItemNewsRowBinding
-
+import com.linkan.carousellnewsapp.ui.model.UiStateArticle
 import javax.inject.Inject
 
 class NewsAdapter @Inject constructor(
     private val glide: RequestManager
 ) : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
 
-    private var onItemClickListener: ((NewsArticle) -> Unit)? = null
+    private var onItemClickListener: ((UiStateArticle) -> Unit)? = null
 
-    fun deleteOnItemClickListener(listener: (NewsArticle) -> Unit) {
+    fun deleteOnItemClickListener(listener: (UiStateArticle) -> Unit) {
         onItemClickListener = listener
     }
 
-    private val diffCallback = object : DiffUtil.ItemCallback<NewsArticle>() {
-        override fun areItemsTheSame(oldItem: NewsArticle, newItem: NewsArticle): Boolean {
+    private val diffCallback = object : DiffUtil.ItemCallback<UiStateArticle>() {
+        override fun areItemsTheSame(oldItem: UiStateArticle, newItem: UiStateArticle): Boolean {
             return oldItem == newItem
         }
 
-        override fun areContentsTheSame(oldItem: NewsArticle, newItem: NewsArticle): Boolean {
+        override fun areContentsTheSame(oldItem: UiStateArticle, newItem: UiStateArticle): Boolean {
             return oldItem == newItem
         }
     }
 
     private val recyclerDiffList = AsyncListDiffer(this, diffCallback)
 
-    var newArticleList: List<NewsArticle>
+    var newArticleList: List<UiStateArticle>
         get() = recyclerDiffList.currentList
         set(value) = recyclerDiffList.submitList(value)
 
@@ -53,16 +52,16 @@ class NewsAdapter @Inject constructor(
 
     override fun onBindViewHolder(holder: NewsViewHolder, position: Int) {
 
-        newArticleList[position].let { newsArticle ->
-            glide.load(newsArticle.bannerUrl)
+        newArticleList[position].let { UiStateArticle ->
+            glide.load(UiStateArticle.newsArticle.bannerUrl)
                 .into(holder.mBinding.imvArticleImage)
-            holder.mBinding.mtvArticleTitle.text = newsArticle.title
-            holder.mBinding.mtvArticleDescription.text = newsArticle.description
-            holder.mBinding.mtvTimeCreated.text = newsArticle.timeCreated?.toString()
+            holder.mBinding.mtvArticleTitle.text = UiStateArticle.newsArticle.title
+            holder.mBinding.mtvArticleDescription.text = UiStateArticle.newsArticle.description
+            holder.mBinding.mtvTimeCreated.text = UiStateArticle.createdTimeAgo.toString()
             holder.itemView.apply {
                 setOnClickListener {
                     onItemClickListener?.let { listener ->
-                        listener(newsArticle)
+                        listener(UiStateArticle)
                     }
                 }
             }

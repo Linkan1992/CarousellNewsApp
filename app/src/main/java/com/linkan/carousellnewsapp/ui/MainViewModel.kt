@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.linkan.carousellnewsapp.data.NewsRepository
 import com.linkan.carousellnewsapp.data.model.NewsArticle
+import com.linkan.carousellnewsapp.ui.model.UiStateArticle
 import com.linkan.carousellnewsapp.util.FilterType
 import com.linkan.carousellnewsapp.util.ResultEvent
 import com.linkan.carousellnewsapp.util.UtilHelper
@@ -30,7 +31,7 @@ class MainViewModel @Inject constructor(
     val newsFeedState = mNewsFeedState.asStateFlow()
 
     private val mNewsArticles =
-        MutableStateFlow<List<NewsArticle>>(emptyList())
+        MutableStateFlow<List<UiStateArticle>>(emptyList())
     val newsArticles = mNewsArticles.asStateFlow()
 
     private val mSelectedFilterType = MutableStateFlow(FilterType.RECENT)
@@ -40,13 +41,12 @@ class MainViewModel @Inject constructor(
         searchCorousellNews()
     }
 
-    val filterdNews: StateFlow<List<NewsArticle>> =
+    val filterdNews: StateFlow<List<UiStateArticle>> =
         combine(newsArticles, selectedFilterType) { newsPost, filter ->
-            Log.d("MainViewModel", "Combine triggered: ${filter.name}, size=${newsPost.size}")
             when (filter) {
-                FilterType.RECENT -> newsPost.sortedByDescending { it.timeCreated }
-                FilterType.POPULAR -> newsPost.sortedWith(compareByDescending<NewsArticle> { it.rank }
-                    .thenByDescending { it.timeCreated })
+                FilterType.RECENT -> newsPost.sortedByDescending { it.newsArticle.timeCreated }
+                FilterType.POPULAR -> newsPost.sortedWith(compareByDescending<UiStateArticle> { it.newsArticle.rank }
+                    .thenByDescending { it.newsArticle.timeCreated })
             }
         }.stateIn(
             viewModelScope,
@@ -63,7 +63,18 @@ class MainViewModel @Inject constructor(
                     when (result) {
                         is ResultEvent.Success -> {
                             val articles = result.data.toList()
-                            mNewsArticles.value = articles
+                            val uiStateArticleList = mutableListOf<UiStateArticle>().run {
+                                articles.forEach { article ->
+                                    add(
+                                        UiStateArticle(
+                                            article,
+                                            UtilHelper.createdTimeAgoString(article.timeCreated ?: 0)
+                                        )
+                                    )
+                                }
+                                this
+                            }
+                            mNewsArticles.value = uiStateArticleList
                             mNewsFeedState.value = result
                         }
 
