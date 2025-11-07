@@ -9,7 +9,7 @@ import javax.inject.Inject
 
 class NewsRepoImpl @Inject constructor(private val newsService: NewsService) : NewsRepository {
 
-    override suspend fun getNews(): Flow<ResultEvent<List<NewsArticle>>> {
+    override fun getNews(): Flow<ResultEvent<List<NewsArticle>>> {
         return flow {
             val response = safeApiCall {
                 newsService.getNews()

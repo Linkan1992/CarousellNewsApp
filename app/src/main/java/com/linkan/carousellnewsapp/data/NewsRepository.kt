@@ -5,7 +5,7 @@ import com.linkan.carousellnewsapp.util.ResultEvent
 import kotlinx.coroutines.flow.Flow
 
 interface NewsRepository {
-    suspend fun getNews(): Flow<ResultEvent<List<NewsArticle>>>
+    fun getNews(): Flow<ResultEvent<List<NewsArticle>>>
 }
 
 
