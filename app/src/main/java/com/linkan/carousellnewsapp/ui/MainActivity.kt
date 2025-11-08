@@ -8,8 +8,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -18,7 +16,7 @@ import com.linkan.carousellnewsapp.R
 import com.linkan.carousellnewsapp.databinding.ActivityMainBinding
 import com.linkan.carousellnewsapp.util.FilterType
 import com.linkan.carousellnewsapp.util.ResultEvent
-import com.linkan.carousellnewsapp.util.setSystemBarsColor
+import com.linkan.carousellnewsapp.util.setStatusBarColorAndIcons
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -34,14 +32,8 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-
+        setStatusBarColorAndIcons(R.color.status_bar_color, false)
         collectFlows()
-        setSystemBarsColor(colorResId = R.color.status_bar_color, darkIcons = true)
         setupHomeBackButton()
         changeDefaultMenuIcon()
         initRecyclerView()

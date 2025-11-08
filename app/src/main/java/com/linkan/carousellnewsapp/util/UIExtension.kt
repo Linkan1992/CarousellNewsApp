@@ -1,82 +1,37 @@
 package com.linkan.carousellnewsapp.util
 
-import android.app.Activity
 import android.os.Build
-import android.view.WindowInsetsController
-import androidx.annotation.ColorRes
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.view.WindowInsetsCompat
 
-fun AppCompatActivity.setStatusBarColorCompat(
-    colorResId: Int, lightIcons: Boolean = false) {
-    val window = window
-
-    WindowCompat. setDecorFitsSystemWindows (window, true)
-
-    val color = ContextCompat.getColor(this, colorResId)
-    window.statusBarColor = color
-
-
-    val insetsController = WindowInsetsControllerCompat(window, window.decorView)
-    insetsController.isAppearanceLightStatusBars = lightIcons
-
-
-    window.navigationBarColor = color
-    insetsController.isAppearanceLightNavigationBars = lightIcons
-}
-
-
-fun Activity.setSystemBarsColor(
-    @ColorRes colorResId: Int,
-    darkIcons: Boolean = false
+fun AppCompatActivity.setStatusBarColorAndIcons(
+    colorResId: Int,
+    darkIcons: Boolean
 ) {
-    val window = window
     val color = ContextCompat.getColor(this, colorResId)
 
-    WindowCompat.setDecorFitsSystemWindows(window, true)
-    window.setFlags(
-        android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS,
-        android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS
-    )
-
-    window.statusBarColor = color
-    window.navigationBarColor = color
-
-    when {
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
-            val controller = window.insetsController
-            if (controller != null) {
-                if (darkIcons) {
-                    controller.setSystemBarsAppearance(
-                        WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
-                        WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
-                    )
-                    controller.setSystemBarsAppearance(
-                        WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS,
-                        WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS
-                    )
-                } else {
-                    controller.setSystemBarsAppearance(
-                        0,
-                        WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
-                    )
-                    controller.setSystemBarsAppearance(
-                        0,
-                        WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS
-                    )
-                }
-            }
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+        // Apply background color and padding for status bar using WindowInsets listener
+        window.decorView.setOnApplyWindowInsetsListener { view, insets ->
+            val statusBarInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars())
+            view.setBackgroundColor(color)
+            view.setPadding(0, statusBarInsets.top, 0, 0)
+            insets
         }
-        else -> {
-            @Suppress("DEPRECATION")
-            window.decorView.systemUiVisibility = if (darkIcons) {
-                android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or
-                        android.view.View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-            } else {
-                0
-            }
+
+        // Control status bar icon colors (light or dark)
+        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = darkIcons
+    } else {
+        // For older versions (API 21-34), set status bar color directly
+        window.statusBarColor = color
+        val flags = window.decorView.systemUiVisibility
+        window.decorView.systemUiVisibility = if (darkIcons) {
+            flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        } else {
+            flags and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
         }
     }
 }
